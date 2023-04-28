@@ -105,9 +105,9 @@ class Perceptron(LinearClassifier):
                 if y*score <= 0:
                     self.w += y*x
 
-class Pegasos(LinearClassifier):
+class PegasosSVC(LinearClassifier):
     """
-    Implementation of the Pegasos algorithm for SVMs.
+    Implementation of the Pegasos algorithm for SVCs.
     """
 
     def __init__(self, lambda_reg=0.1, n_iter=100000):
@@ -143,8 +143,47 @@ class Pegasos(LinearClassifier):
             else:
                 self.w = (1 - n*self.lambda_reg) * self.w
 
+class PegasosLREG(LinearClassifier):
+    """
+    Implementation of the Pegasos algorithm for logistic regression.
+    """
 
-##### The following part is for the optional task.
+    def __init__(self, lambda_reg=0.1, n_iter=100000):
+        self.lambda_reg = lambda_reg
+        self.n_iter = n_iter
+
+    def fit(self, X, Y):
+        self.find_classes(Y)
+        Y_encoded = self.encode_outputs(Y)
+
+        if not isinstance(X, np.ndarray):
+            X = X.toarray()
+
+        n_features = X.shape[1]
+        self.w = np.zeros(n_features)
+        self.lambda_reg = 1/n_features
+
+        # Run the main training loop
+        for t in range(1, self.n_iter):
+            # Pick a random training example
+            rand = np.random.randint(0, len(X))
+            x, y = X[rand], Y_encoded[rand]
+
+            n = 1/(self.lambda_reg*t)
+
+            # Compute the output score for this instance.
+            score = x.dot(self.w)
+
+            # Compute the gradient of the log loss function with respect to the weights.
+            gradient = -y * x * (1 - 1/(1 + np.exp(-y * score)))
+
+            # Update the weights.
+            self.w = (1 - n * self.lambda_reg) * self.w - n * gradient
+
+            # Apply the L2 regularization.
+            self.w *= min(1, 1 / (np.sqrt(self.lambda_reg) * np.linalg.norm(self.w)))
+
+### The following is an optional task
 
 ### Sparse and dense vectors don't collaborate very well in NumPy/SciPy.
 ### Here are two utility functions that help us carry out some vector
