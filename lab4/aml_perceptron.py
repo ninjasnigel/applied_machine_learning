@@ -94,10 +94,6 @@ class Perceptron(LinearClassifier):
         if not isinstance(X, np.ndarray):
             X = X.toarray()
 
-        # Initialize the weight vector to all zeros.
-        n_features = X.shape[1]
-        self.w = np.zeros(n_features)
-
         # Perceptron algorithm:
         for i in range(self.n_iter):
             for x, y in zip(X, Ye):
@@ -108,6 +104,44 @@ class Perceptron(LinearClassifier):
                 # If there was an error, update the weights.
                 if y*score <= 0:
                     self.w += y*x
+
+class Pegasos(LinearClassifier):
+    """
+    Implementation of the Pegasos algorithm for SVMs.
+    """
+
+    def __init__(self, lambda_reg=0.1, n_iter=100000):
+        self.lambda_reg = lambda_reg
+        self.n_iter = n_iter
+
+    def fit(self, X, Y):
+
+        self.find_classes(Y)
+        Y_encoded = self.encode_outputs(Y)
+
+        if not isinstance(X, np.ndarray):
+            X = X.toarray()
+
+        n_features = X.shape[1]
+        self.w = np.zeros(n_features)
+        self.lambda_reg = 1/n_features
+
+        # Run the main training loop
+        for t in range(1, self.n_iter):
+            # Pick a random training example
+            rand = np.random.randint(0, len(X))
+            x, y = X[rand], Y_encoded[rand]
+
+            n = 1/(self.lambda_reg*t)
+
+            # Compute the output score for this instance.
+            score = x.dot(self.w)
+
+            # If there was an error, update the weights.
+            if y*score <= 1:
+                self.w = (1 - n*self.lambda_reg) * self.w + n*y*x
+            else:
+                self.w = (1 - n*self.lambda_reg) * self.w
 
 
 ##### The following part is for the optional task.
