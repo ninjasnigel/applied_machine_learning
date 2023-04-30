@@ -39,7 +39,7 @@ if __name__ == '__main__':
         Normalizer(),
 
         # NB that this is our Perceptron, not sklearn.linear_model.Perceptron
-        PegasosSVC()  
+        PegasosLREG()
     )
 
     # Train the classifier.

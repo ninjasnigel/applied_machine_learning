@@ -126,18 +126,14 @@ class PegasosSVC(LinearClassifier):
         self.w = np.zeros(n_features)
         self.lambda_reg = 1/n_features
 
-        # Run the main training loop
         for t in range(1, self.n_iter):
-            # Pick a random training example
             rand = np.random.randint(0, len(X))
             x, y = X[rand], Y_encoded[rand]
 
             n = 1/(self.lambda_reg*t)
 
-            # Compute the output score for this instance.
             score = x.dot(self.w)
 
-            # If there was an error, update the weights.
             if y*score <= 1:
                 self.w = (1 - n*self.lambda_reg) * self.w + n*y*x
             else:
@@ -163,24 +159,16 @@ class PegasosLREG(LinearClassifier):
         self.w = np.zeros(n_features)
         self.lambda_reg = 1/n_features
 
-        # Run the main training loop
         for t in range(1, self.n_iter):
-            # Pick a random training example
             rand = np.random.randint(0, len(X))
             x, y = X[rand], Y_encoded[rand]
 
             n = 1/(self.lambda_reg*t)
 
-            # Compute the output score for this instance.
             score = x.dot(self.w)
-
-            # Compute the gradient of the log loss function with respect to the weights.
             gradient = -y * x * (1 - 1/(1 + np.exp(-y * score)))
 
-            # Update the weights.
             self.w = (1 - n * self.lambda_reg) * self.w - n * gradient
-
-            # Apply the L2 regularization.
             self.w *= min(1, 1 / (np.sqrt(self.lambda_reg) * np.linalg.norm(self.w)))
 
 ### The following is an optional task
