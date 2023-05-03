@@ -115,16 +115,20 @@ class PegasosSVC(LinearClassifier):
 
     def fit(self, X, Y):
 
+        # Preprocess the data
         self.find_classes(Y)
         Y_encoded = self.encode_outputs(Y)
 
         if not isinstance(X, np.ndarray):
             X = X.toarray()
 
+        # Initialize the weights
         n_features = X.shape[1]
         self.w = np.zeros(n_features)
         self.lambda_reg = 1/n_features
 
+        # Pegasos algorithm implemented
+        # like the peudocode in the paper
         for t in range(1, self.n_iter):
             rand = np.random.randint(0, len(X))
             x, y = X[rand], Y_encoded[rand]
@@ -148,16 +152,20 @@ class PegasosLREG(LinearClassifier):
         self.n_iter = n_iter
 
     def fit(self, X, Y):
+
+        # Preprocess the data
         self.find_classes(Y)
         Y_encoded = self.encode_outputs(Y)
 
         if not isinstance(X, np.ndarray):
             X = X.toarray()
 
+        # Initialize the weights
         n_features = X.shape[1]
         self.w = np.zeros(n_features)
         self.lambda_reg = 1/n_features
 
+        # Pegasos algorithm implemented with logistic regression
         for t in range(1, self.n_iter):
             rand = np.random.randint(0, len(X))
             x, y = X[rand], Y_encoded[rand]
