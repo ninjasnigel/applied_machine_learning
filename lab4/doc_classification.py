@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 from aml_perceptron import Perceptron, SparsePerceptron, PegasosSVC, PegasosLREG
 
 # This function reads the corpus, returns a list of documents, and a list
-# of their corresponding polarity labels. 
+# of their corresponding polarity labels.
 def read_data(corpus_file):
     X = []
     Y = []
@@ -26,11 +26,12 @@ def read_data(corpus_file):
 if __name__ == '__main__':
     
     # Read all the documents.
-    X, Y = read_data('data/all_sentiment_shuffled.txt')
+    X, Y = read_data(
+        'lab4/data/all_sentiment_shuffled.txt')
     
     # Split into training and test parts.
     Xtrain, Xtest, Ytrain, Ytest = train_test_split(X, Y, test_size=0.2,
-                                                    random_state=0)
+                                                    random_state=69)
 
     # Set up the preprocessing steps and the classifier.
     pipeline = make_pipeline(

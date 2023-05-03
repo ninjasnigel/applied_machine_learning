@@ -64,7 +64,6 @@ class LinearClassifier(BaseEstimator):
         """
         return np.array([1 if y == self.positive_class else -1 for y in Y])
 
-
 class Perceptron(LinearClassifier):
     """
     A straightforward implementation of the perceptron learning algorithm.
@@ -236,6 +235,4 @@ class SparsePerceptron(LinearClassifier):
                 if y*score <= 0:
                     # (This corresponds to self.w += y*x above.)
                     add_sparse_to_dense(x, self.w, y)
-
-
 
